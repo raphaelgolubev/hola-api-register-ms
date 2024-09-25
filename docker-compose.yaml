@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  register-ms:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    # working_dir: /app
+    volumes:
+      - type: bind
+        source: ./src
+        target: /app/src
+      # - ./src:/src
+    restart: always
+    environment:
+      - APP_DEBUG=true
+      - WATCHFILES_FORCE_POLLING=true
