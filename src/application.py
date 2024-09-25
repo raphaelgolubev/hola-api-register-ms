@@ -1,23 +1,14 @@
 from fastapi import FastAPI
 
-from src.utils.ansi_colors import Colors, colorize
-
-
-def _colored_print(shutdown: bool = False, startup: bool = False):
-    msg = ''
-    if startup:
-        msg = colorize("STARTUP", Colors.LIGHT_GREEN)
-    else:
-        msg = colorize("SHUTDOWN", Colors.LIGHT_RED)
-    print(f" -- Application {msg} event has been triggered -- ")
+from src.utils.ansi_colors import ANSI
 
 
 async def startup():
-    _colored_print(startup=True)
+    print(ANSI("\n -- Application STARTUP event has been triggered -- \n").yellow())
 
 
 async def shutdown():
-    _colored_print(shutdown=True)
+    print(ANSI("\n -- Application STARTUP event has been triggered -- \n").light_red())
 
 
 async def lifespan(app: FastAPI):

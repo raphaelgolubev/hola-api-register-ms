@@ -1,4 +1,4 @@
-class Colors:
+class Color:
     """ ANSI color codes """
     BLACK = "\033[0;30m"
     RED = "\033[0;31m"
@@ -26,5 +26,27 @@ class Colors:
     END = "\033[0m"
 
 
-def colorize(str, color):
-    return f"{color}{str}{Colors.END}"
+class ANSI(str):
+    black        = lambda self: f"{Color.BLACK}{self}{Color.END}"
+    red          = lambda self: f"{Color.RED}{self}{Color.END}"
+    green        = lambda self: f"{Color.GREEN}{self}{Color.END}"
+    brown        = lambda self: f"{Color.BROWN}{self}{Color.END}"
+    blue         = lambda self: f"{Color.BLUE}{self}{Color.END}"
+    purple       = lambda self: f"{Color.PURPLE}{self}{Color.END}"
+    cyan         = lambda self: f"{Color.CYAN}{self}{Color.END}"
+    light_gray   = lambda self: f"{Color.LIGHT_GRAY}{self}{Color.END}"
+    dark_gray    = lambda self: f"{Color.DARK_GRAY}{self}{Color.END}"
+    light_red    = lambda self: f"{Color.LIGHT_RED}{self}{Color.END}"
+    light_green  = lambda self: f"{Color.LIGHT_GREEN}{self}{Color.END}"
+    yellow       = lambda self: f"{Color.YELLOW}{self}{Color.END}"
+    light_blue   = lambda self: f"{Color.LIGHT_BLUE}{self}{Color.END}"
+    light_purple = lambda self: f"{Color.LIGHT_PURPLE}{self}{Color.END}"
+    light_cyan   = lambda self: f"{Color.LIGHT_CYAN}{self}{Color.END}"
+    light_white  = lambda self: f"{Color.LIGHT_WHITE}{self}{Color.END}"
+    bold         = lambda self: f"{Color.BOLD}{self}{Color.END}"
+    faint        = lambda self: f"{Color.FAINT}{self}{Color.END}"
+    italic       = lambda self: f"{Color.ITALIC}{self}{Color.END}"
+    underline    = lambda self: f"{Color.UNDERLINE}{self}{Color.END}"
+    blink        = lambda self: f"{Color.BLINK}{self}{Color.END}"
+    negative     = lambda self: f"{Color.NEGATIVE}{self}{Color.END}"
+    crossed      = lambda self: f"{Color.CROSSED}{self}{Color.END}"
