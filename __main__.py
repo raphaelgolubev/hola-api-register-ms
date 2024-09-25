@@ -7,4 +7,5 @@ uvicorn.run(
     port=8000,
     timeout_keep_alive=30,
     lifespan='on',
+    reload=True,
 )
