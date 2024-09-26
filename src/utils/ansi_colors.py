@@ -1,52 +1,95 @@
-class Color:
-    """ ANSI color codes """
-    BLACK = "\033[0;30m"
-    RED = "\033[0;31m"
-    GREEN = "\033[0;32m"
-    BROWN = "\033[0;33m"
-    BLUE = "\033[0;34m"
-    PURPLE = "\033[0;35m"
-    CYAN = "\033[0;36m"
-    LIGHT_GRAY = "\033[0;37m"
-    DARK_GRAY = "\033[1;30m"
-    LIGHT_RED = "\033[1;31m"
-    LIGHT_GREEN = "\033[1;32m"
-    YELLOW = "\033[1;33m"
-    LIGHT_BLUE = "\033[1;34m"
-    LIGHT_PURPLE = "\033[1;35m"
-    LIGHT_CYAN = "\033[1;36m"
-    LIGHT_WHITE = "\033[1;37m"
-    BOLD = "\033[1m"
-    FAINT = "\033[2m"
-    ITALIC = "\033[3m"
-    UNDERLINE = "\033[4m"
-    BLINK = "\033[5m"
-    NEGATIVE = "\033[7m"
-    CROSSED = "\033[9m"
-    END = "\033[0m"
+# [30m	Black Text
+# [31m	Red Text
+# [32m	Green Text
+# [33m	Yellow Text
+# [34m	Blue Text
+# [35m	Purple Text
+# [36m	Cyan Text
+# [37m	White Text
+import re
 
 
 class ANSI(str):
-    black        = lambda self: f"{Color.BLACK}{self}{Color.END}"
-    red          = lambda self: f"{Color.RED}{self}{Color.END}"
-    green        = lambda self: f"{Color.GREEN}{self}{Color.END}"
-    brown        = lambda self: f"{Color.BROWN}{self}{Color.END}"
-    blue         = lambda self: f"{Color.BLUE}{self}{Color.END}"
-    purple       = lambda self: f"{Color.PURPLE}{self}{Color.END}"
-    cyan         = lambda self: f"{Color.CYAN}{self}{Color.END}"
-    light_gray   = lambda self: f"{Color.LIGHT_GRAY}{self}{Color.END}"
-    dark_gray    = lambda self: f"{Color.DARK_GRAY}{self}{Color.END}"
-    light_red    = lambda self: f"{Color.LIGHT_RED}{self}{Color.END}"
-    light_green  = lambda self: f"{Color.LIGHT_GREEN}{self}{Color.END}"
-    yellow       = lambda self: f"{Color.YELLOW}{self}{Color.END}"
-    light_blue   = lambda self: f"{Color.LIGHT_BLUE}{self}{Color.END}"
-    light_purple = lambda self: f"{Color.LIGHT_PURPLE}{self}{Color.END}"
-    light_cyan   = lambda self: f"{Color.LIGHT_CYAN}{self}{Color.END}"
-    light_white  = lambda self: f"{Color.LIGHT_WHITE}{self}{Color.END}"
-    bold         = lambda self: f"{Color.BOLD}{self}{Color.END}"
-    faint        = lambda self: f"{Color.FAINT}{self}{Color.END}"
-    italic       = lambda self: f"{Color.ITALIC}{self}{Color.END}"
-    underline    = lambda self: f"{Color.UNDERLINE}{self}{Color.END}"
-    blink        = lambda self: f"{Color.BLINK}{self}{Color.END}"
-    negative     = lambda self: f"{Color.NEGATIVE}{self}{Color.END}"
-    crossed      = lambda self: f"{Color.CROSSED}{self}{Color.END}"
+    ESC = '\033'
+    END = ESC + '[0m'
+
+    BLACK = '30m'
+    RED = '31m'
+    GREEN = '32m'
+    YELLOW = '33m'
+    BLUE = '34m'
+    PURPLE = '35m'
+    CYAN = '36m'
+    WHITE = '37m'
+
+    BOLD = '1m'
+    FAINT = '2m'
+    ITALIC = '3m'
+    UNDERLINE = '4m'
+    INVERSE = '7m'
+    CROSSED = '9m'
+
+    black        = property(lambda self: ANSI(f"{self.ESC}[{self.BLACK}{self}"))
+    red          = property(lambda self: ANSI(f"{self.ESC}[{self.RED}{self}"))
+    green        = property(lambda self: ANSI(f"{self.ESC}[{self.GREEN}{self}"))
+    yellow       = property(lambda self: ANSI(f"{self.ESC}[{self.YELLOW}{self}"))
+    blue         = property(lambda self: ANSI(f"{self.ESC}[{self.BLUE}{self}"))
+    purple       = property(lambda self: ANSI(f"{self.ESC}[{self.PURPLE}{self}"))
+    cyan         = property(lambda self: ANSI(f"{self.ESC}[{self.CYAN}{self}"))
+    white        = property(lambda self: ANSI(f"{self.ESC}[{self.WHITE}{self}"))
+
+    bold         = property(lambda self: ANSI(f"{self.ESC}[{self.BOLD}{self}"))
+    faint        = property(lambda self: ANSI(f"{self.ESC}[{self.FAINT}{self}"))
+    italic       = property(lambda self: ANSI(f"{self.ESC}[{self.ITALIC}{self}"))
+    underline    = property(lambda self: ANSI(f"{self.ESC}[{self.UNDERLINE}{self}"))
+    inverse      = property(lambda self: ANSI(f"{self.ESC}[{self.INVERSE}{self}"))
+    crossed      = property(lambda self: ANSI(f"{self.ESC}[{self.CROSSED}{self}"))
+
+    end          = property(lambda self: ANSI(f"{self}{self.END}"))
+
+    @property
+    def bg(self):
+        # Заменяем '[3<цифра>m' на '[4<цифра>m'
+        code = self.extract_ansi_codes()[0]
+        to_replace = code.replace('3', '4')
+        updated_text = self.replace(code, to_replace)
+        # updated_text = re.sub(r'\[3(\d)m', r'[4\1m', self)
+        return ANSI(updated_text)
+
+    @property
+    def fg(self):
+        # Заменяем '[4<цифра>m' на '[3<цифра>m'
+        code = self.extract_ansi_codes()[0]
+        to_replace = code.replace('4', '3')
+        updated_text = self.replace(code, to_replace)
+        # updated_text = re.sub(r'\[4(\d)m', r'[3\1m', self)
+        return ANSI(updated_text)
+
+    def extract_ansi_codes(self):
+        # Используем регулярное выражение для поиска ANSI кодов
+        pattern = r'(\x1b\[[0-?9;]*[mK])'
+        ansi_codes = re.findall(pattern, self)
+        return ansi_codes
+
+
+def _display_test_str(text: str = "Lorem ipsum dolor sit amet, consectetur adipiscing elit."):
+    test_str = ANSI(text)
+
+    print("Как выглядит каждый стиль\n")
+    print("black:", test_str.black.end())
+    print("red:", test_str.red.end())
+    print("green:", test_str.green.end())
+    print("brown:", test_str.yellow.end())
+    print("blue:", test_str.blue.end())
+    print("purple:", test_str.purple.end())
+    print("cyan:", test_str.cyan.end())
+    print("white:", test_str.white.end())
+
+    print("bold:", test_str.bold.end())
+    print("faint:", test_str.faint.end())
+    print("italic:", test_str.italic.end())
+    print("underline:", test_str.underline.end())
+    print("inverse:", test_str.inverse.end())
+    print("crossed:", test_str.crossed.end())
+
+# _display_test_str()
