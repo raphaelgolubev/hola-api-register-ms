@@ -4,11 +4,11 @@ from src.utils.ansi_colors import ANSI
 
 
 async def startup():
-    print(ANSI("\n -- Application STARTUP event has been triggered -- \n").yellow())
+    print(f"\n -- {ANSI("Application STARTUP").green.bg.bold.end} -- \n")
 
 
 async def shutdown():
-    print(ANSI("\n -- Application STARTUP event has been triggered -- \n").light_red())
+    print(f"\n -- {ANSI("Application SHUTDOWN").red.bg.bold.end} -- \n")
 
 
 async def lifespan(app: FastAPI):
