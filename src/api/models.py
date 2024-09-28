@@ -11,4 +11,11 @@ class User(Base, UuidMixin, TimestampMixin):
     phone: Mapped[str] = mapped_column()
     password: Mapped[str] = mapped_column()
     user_type: Mapped[str] = mapped_column()
-    username: Mapped[str] = mapped_column()
+
+
+class Profile(Base, UuidMixin, TimestampMixin):
+    __tablename__ = 'profiles'
+
+    nickname: Mapped[str] = mapped_column(unique=True)
+    birth_date: Mapped[str] = mapped_column()
+    gender: Mapped[str] = mapped_column()
