@@ -6,10 +6,9 @@ Thumbs.db
 venv/
 env/
 .venv/
-.env/
 
 # Файлы кэша
-__pycache__/
+__pycache__
 *.pyc
 *.pyo
 *.pyd
@@ -19,6 +18,8 @@ __pycache__/
 
 # Прочие файлы
 *.md
-.git/
-.gitignore
+.git
+*.gitignore
+README.md
 LICENSE
+./postgres-data
