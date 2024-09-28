@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Request, HTTPException
 
+from src.database.tables import User
+
 from src.api.schemas import RegisterIn, RegisterOut
 from src.api.service import get_service
-from src.api.models import User
 from src.api.exceptions import EmailAlreadyExistsError
 
 
