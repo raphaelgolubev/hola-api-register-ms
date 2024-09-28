@@ -1,9 +1,10 @@
 from enum import Enum
+from uuid import UUID
 from typing import Dict, List, Optional
 from pydantic import BaseModel, EmailStr
 
 
-class UserType(BaseModel):
+class UserType(str, Enum):
     """
     Тип пользователя:
     - Business - Предприниматель
@@ -15,7 +16,7 @@ class UserType(BaseModel):
     moderator = "Moderator"
 
 
-class CompanyType(Enum):
+class CompanyType(str, Enum):
     """
     Тип компании:
     - IP - ИП, Индивидуальный предприниматель
@@ -27,7 +28,7 @@ class CompanyType(Enum):
     SZ = "SZ"
 
 
-class Gender(BaseModel):
+class Gender(str, Enum):
     """
     Половая принадлежность:
     - Male - Мужской
@@ -50,3 +51,6 @@ class RegisterIn(BaseModel):
     username: str
 
 
+class RegisterOut(BaseModel):
+    id: UUID
+    user_type: UserType
