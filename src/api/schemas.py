@@ -48,7 +48,6 @@ class RegisterIn(BaseModel):
     password: str
     user_type: UserType
     phone: str
-    username: str
 
 
 class RegisterOut(BaseModel):
