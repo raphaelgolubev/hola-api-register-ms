@@ -2,12 +2,10 @@ from sqlalchemy.dialects import postgresql
 from sqlalchemy.schema import CreateTable
 
 from src.database import database
-from src.api.models import Base, User
+from src.api.models import Base
 
 from src.utils.ansi_colors import ANSI
 
-
-print("Base:", Base.metadata.tables)
 
 async def create_all():
     print(ANSI("---  Creating tables ---").purple.bg.end)
