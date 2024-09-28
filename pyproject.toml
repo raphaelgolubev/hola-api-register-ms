@@ -12,6 +12,7 @@ fastapi = "^0.115.0"
 uvicorn = "^0.30.6"
 pydantic-settings = "^2.5.2"
 databases = {extras = ["asyncpg"], version = "^0.9.0"}
+pydantic = {extras = ["email"], version = "^2.9.2"}
 
 
 [build-system]
