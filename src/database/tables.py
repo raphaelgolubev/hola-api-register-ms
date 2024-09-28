@@ -1,8 +1,14 @@
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.schema import CreateTable, DropTable
 
-from src.database import database
-from src.api.models import Base
+from src.database import database, Base
+
+# Я импортирую таблицы в этот файл исключительно ради эстетики
+# чтобы из любого модуля получать доступ ко всем таблицам с помощью:
+# "from src.database.tables import Table1, Table2, Table3,..."
+# Это выглядит семантически правильным
+from src.api.models import User
+from src.api.models import Profile
 
 from src.utils.ansi_colors import ANSI
 
