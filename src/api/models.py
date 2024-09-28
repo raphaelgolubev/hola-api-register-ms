@@ -1,13 +1,14 @@
 from sqlalchemy.orm import Mapped, mapped_column
 
 from src.database import Base
+from src.database.mixins import UuidMixin, TimestampMixin
 
 
-class User(Base):
+class User(Base, UuidMixin, TimestampMixin):
     __tablename__ = 'users'
 
-    id: Mapped[int] = mapped_column(primary_key=True)
     email: Mapped[str] = mapped_column(unique=True)
     phone: Mapped[str] = mapped_column()
-    hashed_password: Mapped[str] = mapped_column()
+    password: Mapped[str] = mapped_column()
     user_type: Mapped[str] = mapped_column()
+    username: Mapped[str] = mapped_column()
