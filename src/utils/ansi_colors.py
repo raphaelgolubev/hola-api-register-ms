@@ -71,6 +71,11 @@ class ANSI(str):
         ansi_codes = re.findall(pattern, self)
         return ansi_codes
 
+    def remove_ansi_codes(text):
+        # Удаляем ANSI коды с помощью регулярного выражения
+        cleaned_text = re.sub(r'\x1B\[[0-?9;]*[mK]', '', text)
+        return cleaned_text  # Возвращаем новую строку без ANSI кодов
+
 
 def _display_test_str(text: str = "Lorem ipsum dolor sit amet, consectetur adipiscing elit."):
     test_str = ANSI(text)
