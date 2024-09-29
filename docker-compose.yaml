@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  postgres-docker:
+    image: postgres:14.1-alpine
+    restart: always
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    networks:
+      - hola-network
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  register-ms:
+    stdin_open: true
+    tty: true
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    # working_dir: /app
+    volumes:
+      - type: bind
+        source: ./src
+        target: /app/src
+      - type: bind
+        source: ./logs
+        target: /app/logs
+      # - ./src:/src
+    restart: always
+    networks:
+      - hola-network
+    depends_on:
+      - postgres-docker
+    environment:
+      - APP_DEBUG=true
+      - WATCHFILES_FORCE_POLLING=true
+
+volumes:
+  postgres_data:
+
+networks:
+  hola-network:
+    driver: bridge

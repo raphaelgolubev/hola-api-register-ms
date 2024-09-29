@@ -6,21 +6,20 @@ Thumbs.db
 venv/
 env/
 .venv/
-.env/
 
 # Файлы кэша
-__pycache__/
-*.py[cod]
+__pycache__
+*.pyc
+*.pyo
+*.pyd
 
-# Логи
-logs/
+# Файлы логов
 *.log
 
-# Конфигурационные файлы
-*.env
-
-# VSCode
-.vscode/
-
 # Прочие файлы
-test.py
+*.md
+.git
+*.gitignore
+README.md
+LICENSE
+./postgres-data
