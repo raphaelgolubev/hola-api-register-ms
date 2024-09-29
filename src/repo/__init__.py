@@ -4,6 +4,7 @@ from uuid import UUID
 from src.abstract import Repository, ModelType, SchemaType
 from src.database import database
 from src.utils.ansi_colors import ANSI
+from src.logging import logger
 
 
 class SQARepository(Repository):
@@ -32,7 +33,7 @@ class SQARepository(Repository):
         query = query.values(**schema.model_dump())
         query = query.returning(self.table.c.id)
 
-        print(ANSI(f"Making INSERT: {query}; Using values: {query.compile().params}").cyan.end)
+        logger.debug(ANSI(f"{query};\nUsing values: {query.compile().params}").purple.end.replace("\n", ""))
 
         id = await database.execute(query=query)
         record = await self._retrieve(id=id)
@@ -46,7 +47,7 @@ class SQARepository(Repository):
         table = Table(self.model.__tablename__, self.model.metadata, autoload=True)
         query = table.insert()
 
-        print(ANSI(f"Making INSERT: {query}; Using many values").cyan.end)
+        logger.debug(ANSI(f"Making INSERT: {query}; Using many values").purple.end.replace("\n", ""))
 
         values = [schema.model_dump() for schema in schemas]
         await database.execute_many(query=query, values=values)
@@ -55,7 +56,7 @@ class SQARepository(Repository):
         query = self.table.select()
         query = query.where(getattr(self.table.c, column) == value)
 
-        print(ANSI(f"Making SELECT: {query}; Where {column} = {value}").cyan.end)
+        logger.debug(ANSI(f"Making SELECT: {query}; Where {column} = {value}").purple.end.replace("\n", ""))
 
         record = await database.fetch_one(query=query)
         
@@ -68,6 +69,6 @@ class SQARepository(Repository):
         table = Table(self.model.__tablename__, self.model.metadata, autoload=True)
         query = table.select().where(getattr(table.c, column).in_(ids))
 
-        print(ANSI(f"Making SELECT: {query}; Using ids: {ids}").cyan.end)
+        logger.debug(ANSI(f"Making SELECT: {query}; Using ids: {ids}").purple.end.replace("\n", ""))
 
         await database.fetch_many(query=query)

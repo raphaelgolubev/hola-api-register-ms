@@ -5,27 +5,28 @@ from src.database.tables import create_all, drop_all
 from src.utils.ansi_colors import ANSI
 from src.routing import main_router
 
+from src.logging import logger
 
 async def startup():
-    print(f"\n -- {ANSI("Application STARTUP").green.bg.bold.end} -- \n")
+    logger.info("Starting up...")
     try:
-        print(f"Connecting to database: {ANSI(database.url).blue.bold.end}")
+        logger.info(f"Connecting to database: {database.url}")
         await database.connect()
         await create_all()
     except Exception as e:
-        print(f"Error connecting to database: {ANSI(str(e)).red.bold.end}")
-    print(f"{ANSI("Connected to database, tables created").green.bold.end}")
+        logger.error(f"Error connecting to database: {str(e)}")
+    logger.success(f"Connected to database, tables created")
 
 
 async def shutdown():
-    print(f"\n -- {ANSI("Application SHUTDOWN").red.bg.bold.end} -- \n")
+    logger.info("Shutting down...")
     try:
         await drop_all()
-        print(f"Disconnecting from database: {ANSI(database.url).blue.bold.end}")
+        logger.info(f"Disconnecting from database")
         await database.disconnect()
     except Exception as e:
-        print(f"Error disconnecting from database: {ANSI(str(e)).red.bold.end}")
-    print(f"{ANSI("Disconnected from database").green.bold.end}")
+        logger.error(f"Error disconnecting from database: {str(e)}")
+    logger.success("Disconnected from database")
 
 
 async def lifespan(app: FastAPI):

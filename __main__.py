@@ -1,6 +1,7 @@
 import uvicorn
 
 from src.config import app_settings
+import src.logging # noqa
 
 
 uvicorn.run(

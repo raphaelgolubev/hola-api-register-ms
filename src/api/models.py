@@ -8,7 +8,7 @@ class User(Base, UuidMixin, TimestampMixin):
     __tablename__ = 'users'
 
     email: Mapped[str] = mapped_column(unique=True)
-    phone: Mapped[str] = mapped_column()
+    phone: Mapped[str] = mapped_column(unique=True)
     password: Mapped[str] = mapped_column()
     user_type: Mapped[str] = mapped_column()
 
