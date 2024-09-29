@@ -18,6 +18,8 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   register-ms:
+    stdin_open: true
+    tty: true
     build:
       context: .
       dockerfile: Dockerfile
@@ -28,6 +30,9 @@ services:
       - type: bind
         source: ./src
         target: /app/src
+      - type: bind
+        source: ./logs
+        target: /app/logs
       # - ./src:/src
     restart: always
     networks:
