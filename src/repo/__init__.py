@@ -1,13 +1,13 @@
 from sqlalchemy import Table
 from uuid import UUID
 
-from src.abstract import Repository, ModelType, SchemaType
+from src.interfaces import IRepository, ModelType, SchemaType
 from src.database import database
 from src.utils.ansi_colors import ANSI
 from src.logging import logger
 
 
-class SQARepository(Repository):
+class SQARepository(IRepository):
     def __init__(self, model: ModelType):
         self.model = model
         self.table = Table(
