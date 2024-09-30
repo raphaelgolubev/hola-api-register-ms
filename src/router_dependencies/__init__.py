@@ -4,10 +4,11 @@ from src.logging import logger
 
 
 async def log_request(request: Request):
-    logger.debug(f"Request: {request.method} {request.url}")
-    logger.debug("Params:")
+    logger.request(f"Request: {request.method} {request.url}")
+    logger.request(f"Client: {request.client.host}:{request.client.port}")
+    logger.request("Params:")
     for name, value in request.path_params.items():
-        logger.debug(f"\t{name}: {value}")
-    logger.debug("Headers:")
+        logger.request(f"\t{name}: {value}")
+    logger.request("Headers:")
     for name, value in request.headers.items():
-        logger.debug(f"\t{name}: {value}")
+        logger.request(f"\t{name}: {value}")
