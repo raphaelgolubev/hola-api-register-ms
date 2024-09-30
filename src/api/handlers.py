@@ -5,13 +5,13 @@ from src.database.tables import User
 from src.api.schemas import RegisterIn, RegisterOut
 from src.api.service import get_service
 from src.api.exceptions import EmailAlreadyExistsError
-from src.logging import logger
+from src.logging import loguru_logger
 
 
 router = APIRouter()
 
 
-@logger.catch
+@loguru_logger.catch
 @router.post(
     "/sign_up",
     name="Создание нового пользователя",
