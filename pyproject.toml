@@ -14,6 +14,7 @@ pydantic-settings = "^2.5.2"
 databases = {extras = ["asyncpg"], version = "^0.9.0"}
 pydantic = {extras = ["email"], version = "^2.9.2"}
 loguru = "^0.7.2"
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
 
 
 [build-system]
