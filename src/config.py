@@ -23,6 +23,12 @@ class AppSettings(BaseSettings):
     model_config = ModelConfig(env_prefix='APP_')
 
 
+class SecuritySettings(BaseSettings):
+    hash_algorithm: str = Field(default="sha256")
+
+    model_config = ModelConfig(env_prefix='SECURITY_')
+
+
 class DatabaseSettings(BaseSettings):
     host: str = Field(default="localhost")
     user: str = Field(default="postgres")
@@ -42,4 +48,5 @@ class DatabaseSettings(BaseSettings):
 
 
 app_settings = AppSettings()
+security_settings = SecuritySettings()
 db_settings = DatabaseSettings()
