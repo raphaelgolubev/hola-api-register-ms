@@ -3,6 +3,8 @@ import sys
 from typing import Any
 from loguru import logger as loguru_logger
 
+from src.utils.ansi_colors import ANSI
+
 
 loguru_logger.remove()
 
@@ -46,32 +48,45 @@ add("logs/error.json", "ERROR")
 
 
 class Logger:
-    def __init__(self):
-        pass
+    class Patcher:
+        @staticmethod
+        def empty_patcher(record):
+            pass
+
+        @staticmethod
+        def remove_ansi_patcher(record):
+            record.update(message=ANSI(record["message"]).remove_ansi_codes())
+
+
+    def __init__(self, force_disable_ansi: bool = False):
+        if force_disable_ansi:
+            self.logger = loguru_logger.patch(Logger.Patcher.remove_ansi_patcher)
+        else:
+            self.logger = loguru_logger.patch(Logger.Patcher.empty_patcher)
 
     def trace(self, *args: Any, **kwargs: Any):
-        loguru_logger.trace(*args, **kwargs)
+        self.logger.trace(*args, **kwargs)
 
     def debug(self, *args: Any, **kwargs: Any):
-        loguru_logger.debug(*args, **kwargs)
+        self.logger.debug(*args, **kwargs)
 
     def info(self, *args: Any, **kwargs: Any):
-        loguru_logger.info(*args, **kwargs)
+        self.logger.info(*args, **kwargs)
 
     def success(self, *args: Any, **kwargs: Any):
-        loguru_logger.success(*args, **kwargs)
+        self.logger.success(*args, **kwargs)
 
     def warning(self, *args: Any, **kwargs: Any):
-        loguru_logger.warning(*args, **kwargs)
+        self.logger.warning(*args, **kwargs)
 
     def error(self, *args: Any, **kwargs: Any):
-        loguru_logger.error(*args, **kwargs)
+        self.logger.error(*args, **kwargs)
 
     def critical(self, *args: Any, **kwargs: Any):
-        loguru_logger.critical(*args, **kwargs)
-    
+        self.logger.critical(*args, **kwargs)
+
     def request(self, *args: Any, **kwargs: Any):
-        loguru_logger.log("REQUEST", *args, **kwargs)
+        self.logger.log("REQUEST", *args, **kwargs)
 
 
 logger = Logger()
