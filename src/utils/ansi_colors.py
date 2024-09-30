@@ -8,7 +8,6 @@
 # [37m	White Text
 import re
 
-
 class ANSI(str):
     ESC = '\033'
     END = ESC + '[0m'
@@ -75,6 +74,24 @@ class ANSI(str):
         # Удаляем ANSI коды с помощью регулярного выражения
         cleaned_text = re.sub(r'\x1B\[[0-?9;]*[mK]', '', text)
         return cleaned_text  # Возвращаем новую строку без ANSI кодов
+
+    @staticmethod
+    def remove_ansi(func):
+        def wrapper(*args, **kwargs):
+            arguments = list(args)
+            keyword_args = kwargs
+
+            for i, arg in enumerate(arguments):
+                if isinstance(arg, str):
+                    arguments[i] = ANSI(arg).remove_ansi_codes()
+
+            for key, value in keyword_args.items():
+                if isinstance(value, str):
+                    keyword_args[key] = ANSI(value).remove_ansi_codes()
+
+            return func(*tuple(arguments), **keyword_args)
+
+        return wrapper
 
 
 def _display_test_str(text: str = "Lorem ipsum dolor sit amet, consectetur adipiscing elit."):
