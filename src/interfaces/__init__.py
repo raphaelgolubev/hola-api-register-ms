@@ -9,7 +9,7 @@ ModelType: TypeAlias = Base
 SchemaType: TypeAlias = BaseModel
 
 
-class Repository(ABC):
+class IRepository(ABC):
     @abstractmethod
     async def create(self, schema: ModelType):
         raise NotImplementedError
@@ -19,3 +19,11 @@ class Repository(ABC):
         raise NotImplementedError
 
 
+class ISecurity(ABC):
+    @abstractmethod
+    def hash_value(self, password: str):
+        raise NotImplementedError
+
+    @abstractmethod
+    def verify(self, plain: str, hash: str):
+        raise NotImplementedError
