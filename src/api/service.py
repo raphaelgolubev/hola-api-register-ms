@@ -1,11 +1,9 @@
-from src.interfaces import IRepository, ISecurity, ModelType
-from src.repo import SQARepository
+from src.interfaces import IRepository, ISecurity
 
 from src.api.schemas import RegisterIn
 from src.api.exceptions import EmailAlreadyExistsError, PhoneAlreadyExistsError
 
 from src.logging import logger
-from src.utils.security import Security
 
 
 class RegisterService:
@@ -41,10 +39,3 @@ class RegisterService:
             return True
 
         return False
-
-
-def get_service(model: ModelType) -> RegisterService:
-    repo = SQARepository(model=model)
-    service = RegisterService(repository=repo, security=Security())
-
-    return service
