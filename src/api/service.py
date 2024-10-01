@@ -1,5 +1,7 @@
 from src.interfaces import IRepository, ISecurity
 
+from src.repo import SQARepository
+from src.database.tables import User, Profile
 from src.api.schemas import RegisterIn
 from src.api.exceptions import EmailAlreadyExistsError, PhoneAlreadyExistsError
 
@@ -7,12 +9,13 @@ from src.logging import logger
 
 
 class RegisterService:
-    def __init__(self, repository: IRepository, security: ISecurity):
-        self.repository = repository
+    def __init__(self, security: ISecurity):
+        self.user_repo: IRepository = SQARepository(User)
+        self.profile_repo: IRepository = SQARepository(Profile)
         self.security = security
 
     async def get_user(self, id):
-        return await self.repository.get_one_by(value=id, column="id")
+        return await self.user_repo.get_one_by(value=id, column="id")
 
     async def add_user(self, schema: RegisterIn):
         if await self.check_email_exists(schema.email):
@@ -22,10 +25,18 @@ class RegisterService:
             raise PhoneAlreadyExistsError(f"Phone '{schema.phone}' уже существует")
 
         schema.password = self.security.hash_value(schema.password)
-        return await self.repository.create(schema)
+        created_user = await self.user_repo.create(schema)
+
+        profile = Profile()
+        profile.user_id = created_user.id
+        created_user.profile = profile
+
+        created_user = await self.user_repo.add_and_commit(created_user)
+        
+        return created_user
 
     async def check_email_exists(self, email: str):
-        model = await self.repository.get_one_by(value=email, column="email")
+        model = await self.user_repo.get_one_by(value=email, column="email")
         if model:
             logger.debug(f"email '{email}' exists")
             return True
@@ -33,7 +44,7 @@ class RegisterService:
         return False
 
     async def check_phone_exists(self, phone: str):
-        model = await self.repository.get_one_by(value=phone, column="phone")
+        model = await self.user_repo.get_one_by(value=phone, column="phone")
         if model:
             logger.debug(f"phone '{phone}' exists")
             return True
