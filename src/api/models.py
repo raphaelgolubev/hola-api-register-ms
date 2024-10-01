@@ -29,9 +29,9 @@ class User(Base, UuidMixin, TimestampMixin):
 class Profile(Base, UuidMixin, TimestampMixin):
     __tablename__ = 'profiles'
 
-    nickname: Mapped[str] = mapped_column(unique=True)
-    birth_date: Mapped[str] = mapped_column()
-    gender: Mapped[str] = mapped_column()
+    nickname: Mapped[str] = mapped_column(unique=True, nullable=True)
+    birth_date: Mapped[str] = mapped_column(nullable=True)
+    gender: Mapped[str] = mapped_column(nullable=True)
 
     user_id: Mapped[UuidType] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
     user: Mapped["User"] = relationship(back_populates="profile", single_parent=True)
