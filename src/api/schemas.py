@@ -39,7 +39,6 @@ class Gender(str, Enum):
     female = "Female"
     unselected = "Unselected"
 
-
 class RegisterIn(BaseModel):
     """
     Данные для регистрации от клиентского приложения
@@ -48,7 +47,6 @@ class RegisterIn(BaseModel):
     password: str
     user_type: UserType
     phone: str
-
 
 class RegisterOut(BaseModel):
     id: UUID
