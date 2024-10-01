@@ -14,8 +14,21 @@ class RegisterService:
         self.profile_repo: IRepository = SQARepository(Profile)
         self.security = security
 
-    async def get_user(self, id):
-        return await self.user_repo.get_one_by(value=id, column="id")
+    async def check_email_exists(self, email: str):
+        model = await self.user_repo.get_one_by(value=email, column="email")
+        if model:
+            logger.debug(f"email '{email}' exists")
+            return True
+
+        return False
+
+    async def check_phone_exists(self, phone: str):
+        model = await self.user_repo.get_one_by(value=phone, column="phone")
+        if model:
+            logger.debug(f"phone '{phone}' exists")
+            return True
+
+        return False
 
     async def add_user(self, schema: RegisterIn):
         if await self.check_email_exists(schema.email):
@@ -35,18 +48,4 @@ class RegisterService:
         
         return created_user
 
-    async def check_email_exists(self, email: str):
-        model = await self.user_repo.get_one_by(value=email, column="email")
-        if model:
-            logger.debug(f"email '{email}' exists")
-            return True
 
-        return False
-
-    async def check_phone_exists(self, phone: str):
-        model = await self.user_repo.get_one_by(value=phone, column="phone")
-        if model:
-            logger.debug(f"phone '{phone}' exists")
-            return True
-
-        return False
