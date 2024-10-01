@@ -1,3 +1,5 @@
+from functools import singledispatch
+
 from sqlalchemy import select, delete
 from sqlalchemy.ext.asyncio import async_sessionmaker
 from uuid import UUID
@@ -19,6 +21,13 @@ class SQARepository(IRepository):
             expire_on_commit=False, 
             autocommit=False
         )
+        
+    async def add_and_commit(self, db_model: ModelType) -> ModelType:
+        async with self.session() as session:
+            session.add(db_model)
+            await session.commit()
+            await session.refresh(db_model)
+            return db_model
 
     async def create(self, schema: SchemaType) -> ModelType | None:
         db_model = self.model(**schema.model_dump())
