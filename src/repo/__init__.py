@@ -24,22 +24,22 @@ class SQARepository(IRepository):
         
     async def add_and_commit(self, db_model: ModelType) -> ModelType:
         async with self.session() as session:
-            session.add(db_model)
-            await session.commit()
-            await session.refresh(db_model)
-            return db_model
+            try:
+                session.add(db_model)
+                await session.commit()
+                await session.refresh(db_model)
+                return db_model
+            except exc.IntegrityError:
+                raise exc.IntegrityConflictError(f"{self.model.__tablename__} conflicts with existing data.")
+            except Exception as e:
+                raise exc.RepositoryError(f"Неизвестная ошибка: {e}") from e
 
     async def create(self, schema: SchemaType) -> ModelType | None:
         db_model = self.model(**schema.model_dump())
-
         try:
             return self.add_and_commit(db_model)
-        except exc.IntegrityError:
-            raise exc.IntegrityConflictError(
-                f"{self.model.__tablename__} conflicts with existing data."
-            )
         except Exception as e:
-            raise exc.RepositoryError(f"Неизвестная ошибка: {e}") from e
+            raise e
 
     async def create_many(self, schemas: list[SchemaType]) -> list[ModelType]:
         db_models = [self.model(**schema.model_dump()) for schema in schemas]
