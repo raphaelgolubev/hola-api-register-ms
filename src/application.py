@@ -1,10 +1,10 @@
 from fastapi import FastAPI
 
 from src.database.tables import create_all, drop_all
-from src.utils.ansi_colors import ANSI
 from src.routing import main_router
 
 from src.logging import logger
+
 
 async def startup():
     logger.info("Starting up...")
@@ -34,7 +34,3 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 app.include_router(main_router, prefix="/api/v1")
-
-@app.get("/ping")
-def ping():
-    return "pong"
