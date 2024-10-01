@@ -11,11 +11,31 @@ SchemaType: TypeAlias = BaseModel
 
 class IRepository(ABC):
     @abstractmethod
-    async def create(self, schema: ModelType):
+    async def add_and_commit(self, db_model: ModelType):
         raise NotImplementedError
 
     @abstractmethod
-    async def get_one_by(self, value: str, column: str):
+    async def create(self, schema: SchemaType):
+        raise NotImplementedError
+
+    @abstractmethod
+    async def create_many(self, schemas: list[SchemaType]):
+        raise NotImplementedError
+
+    @abstractmethod
+    async def get_one_by(self, value: str, column: str, with_for_update: bool = False):
+        raise NotImplementedError
+
+    @abstractmethod
+    async def get_many_by(self, values: list[str], column: str, with_for_update: bool = False):
+        raise NotImplementedError
+
+    @abstractmethod
+    async def update_one_by(self, data: SchemaType, value: str, column: str):
+        raise NotImplementedError
+
+    @abstractmethod
+    async def remove_by(self, value: str, column: str):
         raise NotImplementedError
 
 
