@@ -1,7 +1,4 @@
-from sqlalchemy.dialects import postgresql
-from sqlalchemy.schema import CreateTable, DropTable
-
-from src.database import database, Base
+from src.database import engine, Base
 
 # Я импортирую таблицы в этот файл исключительно ради эстетики
 # чтобы из любого модуля получать доступ ко всем таблицам с помощью:
@@ -16,19 +13,19 @@ from src.logging import logger
 
 async def create_all():
     logger.info(ANSI("---  Creating tables ---").purple.bg.end)
+
     for table in Base.metadata.tables.values():
         logger.info(ANSI(f"Creating table: {table.name}").purple.end)
-        schema = CreateTable(table, if_not_exists=True)
-        query = str(schema.compile(dialect=postgresql.dialect()))
 
-        await database.execute(query)
+    async with engine.begin() as connection:
+        await connection.run_sync(Base.metadata.create_all)
 
 
 async def drop_all():
     logger.info(ANSI("---  Dropping tables ---").purple.bg.end)
+
+    async with engine.begin() as connection:
+        await connection.run_sync(Base.metadata.drop_all)
+
     for table in Base.metadata.tables.values():
         logger.info(ANSI(f"Dropping table: {table.name}").purple.end)
-        schema = DropTable(table, if_exists=True)
-        query = str(schema.compile(dialect=postgresql.dialect()))
-
-        await database.execute(query)

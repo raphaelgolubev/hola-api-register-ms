@@ -1,10 +1,11 @@
-from databases import Database
+from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.orm import DeclarativeBase
 
 from src.config import db_settings
 
 
-database = Database(db_settings.async_dsn)
+engine = create_async_engine(db_settings.async_dsn, echo=True)
+# database = Database(db_settings.async_dsn)
 
 
 class Base(DeclarativeBase):
