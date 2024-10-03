@@ -1,0 +1,30 @@
+{% extends "base_email.html" %}
+
+{% block content %}
+<table role="presentation" border="0" cellpadding="0" cellspacing="0" class="main">
+  <tr>
+    <td class="wrapper">
+      <p>Ваш код подтверждения:</p>
+      <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="btn btn-primary">
+        <tbody>
+          <tr>
+            <td align="left">
+              <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+                <tbody>
+                  <tr>
+                    <td> <div class="verification-code">{{ verification_code }}</div> </td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <p>
+        Пожалуйста, подтвердите, что это действительно Ваш адрес электронной почты, введя этот код в приложении. 
+        В целях безопасности срок действия кода истечет через {{ expire_min }} минут.
+      </p>
+    </td>
+  </tr>
+</table>
+{% endblock %}
