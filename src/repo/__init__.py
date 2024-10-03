@@ -37,7 +37,7 @@ class SQARepository(IRepository):
     async def create(self, schema: SchemaType) -> ModelType | None:
         db_model = self.model(**schema.model_dump())
         try:
-            return self.add_and_commit(db_model)
+            return await self.add_and_commit(db_model)
         except Exception as e:
             raise e
 
