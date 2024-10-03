@@ -19,6 +19,7 @@ __pycache__
 # Прочие файлы
 *.md
 .git
+.vscode
 *.gitignore
 README.md
 LICENSE
