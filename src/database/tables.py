@@ -24,8 +24,10 @@ async def create_all():
 async def drop_all():
     logger.info(ANSI("---  Dropping tables ---").purple.bg.end)
 
+    for table in Base.metadata.tables.values():
+        logger.info(ANSI(f"Dropping table: {table.name}").purple.end)
+
     async with engine.begin() as connection:
         await connection.run_sync(Base.metadata.drop_all)
 
-    for table in Base.metadata.tables.values():
-        logger.info(ANSI(f"Dropping table: {table.name}").purple.end)
+
