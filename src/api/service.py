@@ -6,6 +6,7 @@ from src.api.schemas import RegisterIn
 from src.api.exceptions import EmailAlreadyExistsError, PhoneAlreadyExistsError
 
 from src.logging import logger
+from src.utils.smtp import send_verification_code
 
 
 class RegisterService:
@@ -45,7 +46,11 @@ class RegisterService:
         created_user.profile = profile
 
         created_user = await self.user_repo.add_and_commit(created_user)
-        
+
         return created_user
 
+    def send_email_code(self, to_email: str):
+        send_verification_code(recipient=to_email, code=123456)
 
+    def verify_email_code(self):
+        pass
