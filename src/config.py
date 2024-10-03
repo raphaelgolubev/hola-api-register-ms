@@ -1,6 +1,10 @@
-from pydantic import Field
+import os
+
+from pydantic import Field, computed_field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+
+base_dir: str = os.path.dirname(os.path.abspath(__file__))
 
 class ModelConfig:
     def __new__(cls, *args, **kwargs):
@@ -25,8 +29,23 @@ class AppSettings(BaseSettings):
 
 class SecuritySettings(BaseSettings):
     hash_algorithm: str = Field(default="sha256")
+    verification_code_expiration_seconds: int = Field(default=1200)
 
     model_config = ModelConfig(env_prefix='SECURITY_')
+
+
+class EmailSettings(BaseSettings):
+    host: str = Field(default="localhost")
+    port: int = Field(default=25)
+    user: str = Field(default="smtp_user")
+    password: str = Field(default="smtp_password")
+    
+    @computed_field
+    @property
+    def email_templates_dir(self) -> str:
+        return os.path.join(os.path.dirname(base_dir), 'static/templates')
+
+    model_config = ModelConfig(env_prefix='EMAIL_')
 
 
 class DatabaseSettings(BaseSettings):
@@ -49,4 +68,5 @@ class DatabaseSettings(BaseSettings):
 
 app_settings = AppSettings()
 security_settings = SecuritySettings()
+email_settings = EmailSettings()
 db_settings = DatabaseSettings()
