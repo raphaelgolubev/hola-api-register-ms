@@ -1,5 +1,8 @@
-from redis import Redis
+from redis.asyncio import Redis
+
+from src.config import settings
 
 
 class OneTimeCodeService:
-    pass
+    def __init__(self):
+        self.client = Redis()

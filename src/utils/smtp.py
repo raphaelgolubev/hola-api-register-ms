@@ -8,7 +8,7 @@ from pathlib import Path
 from jinja2 import Environment, FileSystemLoader, Template
 from pydantic import BaseModel
 
-from src.config import email_settings, security_settings
+from src.config import settings
 
 
 class Email(BaseModel):
@@ -18,7 +18,7 @@ class Email(BaseModel):
 
 
 def _send_email(email: Email, template_file: str):
-    templates_dir = email_settings.email_templates_dir
+    templates_dir = settings.paths.jinja_templates_dir  # settings.email.email_templates_dir
     
     file_loader = FileSystemLoader(searchpath=Path(templates_dir))
     environment = Environment(loader=file_loader)
@@ -26,19 +26,19 @@ def _send_email(email: Email, template_file: str):
 
     ssl_context = create_default_context()
 
-    with SMTP_SSL(email_settings.host, email_settings.port, context=ssl_context) as server:
+    with SMTP_SSL(settings.email.host, settings.email.port, context=ssl_context) as server:
         html = template.render(**email.jinja_variables)
 
         message = MIMEMultipart()
         message["Subject"] = email.subject
-        message["From"] = email_settings.user
+        message["From"] = settings.email.user
         message["To"] = email.recipient
         message.attach(MIMEText(html, "html"))
 
-        server.login(email_settings.user, email_settings.password)
+        server.login(settings.email.user, settings.email.password)
 
         server.send_message(
-            from_addr=email_settings.user,
+            from_addr=settings.email.user,
             to_addrs=email.recipient,
             msg=message
         )
@@ -50,7 +50,7 @@ def send_verification_code(recipient: str, code: str):
         subject="Код подтверждения для нового аккаунта HOLA App",
         jinja_variables={
             "verification_code": code,
-            "expire_min": int(security_settings.verification_code_expiration_seconds / 60)
+            "expire_min": int(settings.security.verification_code_expiration_seconds / 60)
         }
     )
 

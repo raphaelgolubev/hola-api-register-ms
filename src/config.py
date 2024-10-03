@@ -4,8 +4,6 @@ from pydantic import Field, computed_field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-base_dir: str = os.path.dirname(os.path.abspath(__file__))
-
 class ModelConfig:
     def __new__(cls, *args, **kwargs):
         config = SettingsConfigDict(
@@ -18,6 +16,16 @@ class ModelConfig:
         )
         config.update(**kwargs)
         return config
+
+
+class ApplicationPaths:
+    @property
+    def base_dir(self) -> str:
+        return os.path.dirname(os.path.abspath(__file__))
+    
+    @property
+    def jinja_templates_dir(self) -> str:
+        return os.path.join(os.path.dirname(self.base_dir), 'static/templates')
 
 
 class AppSettings(BaseSettings):
@@ -34,16 +42,11 @@ class SecuritySettings(BaseSettings):
     model_config = ModelConfig(env_prefix='SECURITY_')
 
 
-class EmailSettings(BaseSettings):
+class EmailSettings(BaseSettings, ApplicationPaths):
     host: str = Field(default="localhost")
     port: int = Field(default=25)
     user: str = Field(default="smtp_user")
     password: str = Field(default="smtp_password")
-    
-    @computed_field
-    @property
-    def email_templates_dir(self) -> str:
-        return os.path.join(os.path.dirname(base_dir), 'static/templates')
 
     model_config = ModelConfig(env_prefix='EMAIL_')
 
@@ -66,7 +69,20 @@ class DatabaseSettings(BaseSettings):
     model_config = ModelConfig(env_prefix='POSTGRES_')
 
 
-app_settings = AppSettings()
-security_settings = SecuritySettings()
-email_settings = EmailSettings()
-db_settings = DatabaseSettings()
+class RedisSettings(BaseSettings):
+    host: str = Field(default="localhost")
+    port: int = Field(default=6379)
+    
+    model_config = ModelConfig(env_prefix='REDIS_')
+
+
+class Settings:
+    paths = ApplicationPaths()
+    app = AppSettings()
+    security = SecuritySettings()
+    email = EmailSettings()
+    db = DatabaseSettings()
+    redis = RedisSettings()
+
+
+settings = Settings()
