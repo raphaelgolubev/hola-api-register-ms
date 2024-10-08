@@ -66,10 +66,8 @@ COPY pyproject.toml poetry.lock ./
 # Устанавливаем Poetry
 RUN python3 -m venv $POETRY_VENV \
     && $POETRY_VENV/bin/pip install -U pip setuptools \
-    && $POETRY_VENV/bin/pip install poetry==${POETRY_VERSION}
-
-# Устанавливаем зависимости
-RUN $POETRY_VENV/bin/poetry config virtualenvs.create false \
+    && $POETRY_VENV/bin/pip install poetry==${POETRY_VERSION} \
+    && $POETRY_VENV/bin/poetry config virtualenvs.create false \
     && $POETRY_VENV/bin/poetry install --no-dev --no-interaction --no-ansi
 
 # ============================================= final
